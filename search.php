@@ -1,14 +1,16 @@
 <?php
 include 'config/database.php';
 
-$name = $_GET['q']; // Celah: Input langsung digunakan tanpa Prepared Statements
+$name = trim($_GET['q'] ?? '');
 
-// Vektor Serangan: ' OR '1'='1
-$query = "SELECT * FROM patients WHERE name LIKE '%$name%'";
-$result = mysqli_query($conn, $query);
+$stmt = mysqli_prepare($conn, "SELECT id, name, nik FROM patients WHERE name LIKE ?");
+$keyword = "%" . $name . "%";
+mysqli_stmt_bind_param($stmt, "s", $keyword);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 echo "<h1>Hasil Pencarian Pasien:</h1>";
 while($row = mysqli_fetch_assoc($result)) {
-    echo "Nama: " . $row['name'] . " | NIK: " . $row['nik'] . "<br>";
+    echo "Nama: " . htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') . " | NIK: " . htmlspecialchars($row['nik'], ENT_QUOTES, 'UTF-8') . "<br>";
 }
 ?>
