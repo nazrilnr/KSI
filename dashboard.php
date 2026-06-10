@@ -1,24 +1,37 @@
 <?php
 include 'config/database.php';
-include 'includes/header.php';
 session_start();
 
-// Celah: Tidak ada pengecekan session yang kuat (header redirection bisa di-bypass)
-// Mahasiswa harus menambahkan proteksi isset($_SESSION['user'])
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
+}
+
+include 'includes/header.php';
 ?>
 
 <h2>Dashboard Dokter</h2>
-<p>Selamat bekerja, Dokter!</p>
+
+<p>
+    Selamat bekerja,
+    <?php echo htmlspecialchars($_SESSION['user'], ENT_QUOTES, 'UTF-8'); ?>!
+</p>
 
 <h3>Daftar Pasien Terbaru:</h3>
+
 <ul>
-<?php
-$query = "SELECT id, name FROM patients";
-$result = mysqli_query($conn, $query);
-while($row = mysqli_fetch_assoc($result)) {
-    echo "<li>" . $row['name'] . " - <a href='detail_pasien.php?id=" . $row['id'] . "'>Lihat Detail</a></li>";
-}
-?>
+    <?php
+    $query = "SELECT id, name FROM patients";
+    $result = mysqli_query($conn, $query);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<li>"
+            . htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8')
+            . " - <a href='detail_pasien.php?id="
+            . (int) $row['id']
+            . "'>Lihat Detail</a></li>";
+    }
+    ?>
 </ul>
 
 <?php include 'includes/footer.php'; ?>
