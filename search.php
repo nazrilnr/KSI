@@ -1,5 +1,6 @@
 <?php
 include 'config/database.php';
+include 'config/crypto.php';
 
 $name = trim($_GET['q'] ?? '');
 
@@ -12,6 +13,6 @@ $result = mysqli_stmt_get_result($stmt);
 echo "<h1>Hasil Pencarian Pasien:</h1>";
 while($row = mysqli_fetch_assoc($result)) {
     echo "Nama: " . htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') . " 
-    | NIK: " . htmlspecialchars($row['nik'], ENT_QUOTES, 'UTF-8') . "<br>";
+    | NIK: " . htmlspecialchars(decrypt_nik($row['nik']), ENT_QUOTES, 'UTF-8') . "<br>";
 }
 ?>
