@@ -1,4 +1,5 @@
 <?php
+include 'config/auth.php';
 include 'config/database.php';
 include 'config/crypto.php';
 
